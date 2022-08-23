@@ -16,45 +16,6 @@ def derivative(y, start, end, N):
     
     return derivative
 
-data = pg.physics.ert.load('simple.dat')
-
-manager = pg.physics.ert.ERTManager(data, sr=False, useBert=True, debug=False, verbose=False)
-
-start = 1
-end = 10
-N = 19
-n = []
-p = []
-
-lambdas = np.linspace(start, end, N)
-for lam in lambdas:
-    manager.invert(lam=lam)
-    n.append(manager.inv.phiModel())  
-    p.append(manager.inv.phiData())
-     
-    
-n = np.array(n)
-p = np.array(p)
-dn = derivative(n, start, end, N)
-ddn = derivative(dn, start, end, N)
-dp = derivative(p, start, end, N)
-ddp = derivative(dp, start, end, N)
-ns = n**2
-ps = p**2
-dns = dn**2
-dps = dp**2
-
-r = ( p*n / ((dps*ns+ps*dns)**1.5) ) * (ddn*n*dp*p-ddp*p*dn*n-dns*dp*p+dps*dn*n) 
-
-K = np.log(p)
-X = np.log(n)
-right = max(r)
-for i in range(N):
-    if r[i]==right:
-        score = i
-
-Optimun_Lambda = str(round(lambdas[score], 3))
-
 font_title = {'family': 'serif',
               'color':  'darkred',
               'weight': 'normal',
@@ -69,10 +30,50 @@ font_label = {'family': 'serif',
               'color':  'darkblue',
               'weight': 'normal',
               'size': 16,
-              }   
+              }  
+
+data = pg.physics.ert.load('simple.dat')
+manager = pg.physics.ert.ERTManager(data, sr=False, useBert=True, 
+                                    debug=False, verbose=False)
+
+start = 0.2
+end = 1
+N = 17
+p = []
+n = []
+
+lambdas = np.linspace(start, end, N)
+for lam in lambdas:
+    manager.invert(lam=lam)
+    
+    n.append(manager.inv.phiModel())   
+    p.append(manager.inv.phiData())
+
+n = np.array(n)
+p = np.array(p)
+dn = derivative(n, start, end, N)
+ddn = derivative(dn, start, end, N)
+dp = derivative(p, start, end, N)
+ddp = derivative(dp, start, end, N)
+ns = n**2
+ps = p**2
+dns = dn**2
+dps = dp**2
+
+r = ( p*n / ((dps*ns+ps*dns)**1.5) ) * (ddn*n*dp*p-ddp*p*dn*n-dns*dp*p+dps*dn*n)
+
+K = np.log(p)
+X = np.log(n)
+right = max(r)
+for i in range(N):
+    if r[i]==right:
+        score = i
+
+Lambda_O = str(round(lambdas[score], 3)) 
 
 plt.figure() 
 plt.plot(K, X, 'darkblue', linewidth=3)
+plt.title('L-curve', fontdict=font_title)
 plt.axhline(X[score], color="black", linestyle="--")
 plt.axvline(K[score], color="black", linestyle="--")
 plt.xlabel('Residual Norm', fontdict=font_label)
@@ -80,7 +81,8 @@ plt.ylabel('Solution Norm', fontdict=font_label)
 
 plt.figure()
 plt.plot(lambdas, r, 'darkorange', linewidth=3) 
-plt.text(lambdas[score], r[score], r'$\lambda_O$: '+Optimun_Lambda, fontdict=font_text)
+plt.title('Expected Curvature', fontdict=font_title)
+plt.text(lambdas[score], r[score], r'$\lambda_O$: '+Lambda_O, fontdict=font_text)
 plt.xlabel(r'Lambda $\lambda$', fontdict=font_label)
 plt.ylabel(r'Curvature $\gamma$', fontdict=font_label)
 plt.grid()
