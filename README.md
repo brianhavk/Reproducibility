@@ -1,5 +1,5 @@
 # Reproducibility
-This repository is intended to make available the codes and information and data used in the articles and conferences presented.
+This repository is intended to make available the codes and data used in the articles and conferences presented.
 
 ## Digital Object Identifier (DOI)
 - DYNA 2022: https://doi.org/10.15446/dyna.v89n222.101826
