@@ -6,4 +6,4 @@ DYNA 2022: https://doi.org/10.15446/dyna.v89n222.101826
 ANDESCON 2022: 10.1109/ANDESCON56260.2022.9989631
 
 ## Book of Abstracs
-RAUGM 2022: Geos - Vol. 1 - No. 1
+RAUGM 2022: https://geos.cicese.mx/index.php/geos/issue/view/17
